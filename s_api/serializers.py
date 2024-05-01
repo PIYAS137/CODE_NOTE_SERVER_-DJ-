@@ -17,6 +17,7 @@ class CodeModel_Serializer(serializers.Serializer):
     s_secret = serializers.IntegerField()
     date = serializers.CharField(max_length=40)
     course = serializers.CharField(max_length=40)
+    c_id = serializers.IntegerField()
 
     def create(self, validated_data):
         return CodeModel.objects.create(**validated_data)

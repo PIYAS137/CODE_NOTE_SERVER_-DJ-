@@ -67,12 +67,36 @@ def AddNewCode(req):
     else:
         return JsonResponse({"error":"Invalid Method For this Action !"},status=405)
     
-# GET user own codes data ==================>
+# GET user own codes data by secret ==================>
 def GetOwnCodeDatas(req,pk):   
     try:
-        s_id = CodeModel.objects.filter(s_id=pk) # many datas finding so, filter
-        ser = CodeModel_Serializer(s_id,many=True)
+        s_secret = CodeModel.objects.filter(s_secret=pk) # many datas finding so, filter
+        ser = CodeModel_Serializer(s_secret,many=True)
         jsonData = JSONRenderer().render(ser.data)
         return HttpResponse(jsonData,content_type="application/json")
     except:
         return JsonResponse({"error":"invalid user"},status=401)
+
+
+
+
+    if req.method == 'POST':
+        try:
+            data = json.loads(req.body)
+            print(data)
+        except:
+            return JsonResponse({"error":"Invalid Json Format"},status=400)
+        c_id = CodeModel.objects.get(c_id=pk)
+        print(c_id)
+        try:
+            OneMatchedObject=CodeModel.objects.get(c_id=c_id)
+        except:
+            JsonResponse({"error":"Object Not Found !"},status=400)
+        serializer = CodeModel_Serializer(OneMatchedObject,data=data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({"status": "CodeModel data updated successfully"}, status=200)
+        else:
+            return JsonResponse(serializer.errors,status=400)
+    else:
+        return JsonResponse({"error":"Invalid Method"},status=405)

@@ -12,3 +12,4 @@ class CodeModel(models.Model):
     s_secret = models.IntegerField()
     date = models.CharField(max_length=40)
     course = models.CharField(max_length=40)
+    c_id = models.IntegerField()

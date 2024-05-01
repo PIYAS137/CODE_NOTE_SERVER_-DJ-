@@ -8,6 +8,8 @@ from rest_framework.renderers import JSONRenderer
 
 # Create your views here.
 @csrf_exempt
+
+# Sign Up User==========================>
 def SignUpUser(req):
     if req.method == 'POST':
         try:
@@ -30,8 +32,19 @@ def SignUpUser(req):
         return JsonResponse({"error":"Method Not Allowed"},status=405)
 
 
+# Login User===================================
+def LoginUser(req,pk):
+    try:
+        student = StudentAuthCredential.objects.get(s_id=pk)
+        serializer = StudentAuthCredential_Serializer(student)
+        jsonData = JSONRenderer().render(serializer.data)
+        return HttpResponse(jsonData,content_type="application/json")
+    except:
+        return JsonResponse({"error":"invalid credentials"},status=401)
+    
 
 
+# Get All User=================================>
 def GetAllUser(req):
     x = StudentAuthCredential.objects.all()
     ser = StudentAuthCredential_Serializer(x,many=True)

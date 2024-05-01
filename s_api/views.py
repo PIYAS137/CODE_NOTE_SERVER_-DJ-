@@ -34,12 +34,12 @@ def SignUpUser(req):
 # Login User===================================>
 def LoginUser(req,pk):
     try:
-        student = StudentAuthCredential.objects.get(s_id=pk)
+        student = StudentAuthCredential.objects.get(s_id=pk) # 1 data finding so, get
         serializer = StudentAuthCredential_Serializer(student)
         jsonData = JSONRenderer().render(serializer.data)
         return HttpResponse(jsonData,content_type="application/json")
     except:
-        return JsonResponse({"error":"invalid credentials"},status=401)
+        return JsonResponse({"error":"invalid user"},status=401)
 # Get All User=================================>
 def GetAllUser(req):
     x = StudentAuthCredential.objects.all()
@@ -66,3 +66,13 @@ def AddNewCode(req):
             return JsonResponse(serializedData.errors,status=400)
     else:
         return JsonResponse({"error":"Invalid Method For this Action !"},status=405)
+    
+# GET user own codes data ==================>
+def GetOwnCodeDatas(req,pk):   
+    try:
+        s_id = CodeModel.objects.filter(s_id=pk) # many datas finding so, filter
+        ser = CodeModel_Serializer(s_id,many=True)
+        jsonData = JSONRenderer().render(ser.data)
+        return HttpResponse(jsonData,content_type="application/json")
+    except:
+        return JsonResponse({"error":"invalid user"},status=401)
